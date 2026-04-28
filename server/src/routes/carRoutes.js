@@ -1,0 +1,37 @@
+import express from "express";
+import { body, param } from "express-validator";
+import {
+  createCar,
+  deleteCar,
+  getCarById,
+  getCars,
+  updateCar
+} from "../controllers/carController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/uploadMiddleware.js";
+
+const router = express.Router();
+
+const objectIdRule = param("id").isMongoId().withMessage("Invalid car id");
+
+const carRules = [
+  body("title").trim().notEmpty().withMessage("Title is required"),
+  body("brand").trim().notEmpty().withMessage("Brand is required"),
+  body("price").isNumeric().withMessage("Price must be numeric"),
+  body("year").isInt({ min: 1980, max: new Date().getFullYear() + 1 }).withMessage("Enter a valid year"),
+  body("fuelType").isIn(["Petrol", "Diesel", "CNG", "Electric", "Hybrid"]).withMessage("Invalid fuel type"),
+  body("transmission").isIn(["Manual", "Automatic"]).withMessage("Invalid transmission"),
+  body("kmDriven").isNumeric().withMessage("Kilometers driven must be numeric"),
+  body("location").trim().notEmpty().withMessage("Location is required"),
+  body("description").trim().notEmpty().withMessage("Description is required"),
+  body("status").optional().isIn(["available", "sold"]).withMessage("Invalid status")
+];
+
+router.route("/").get(getCars).post(protect, upload.array("images", 8), carRules, createCar);
+router
+  .route("/:id")
+  .get(objectIdRule, getCarById)
+  .put(protect, upload.array("images", 8), objectIdRule, carRules, updateCar)
+  .delete(protect, objectIdRule, deleteCar);
+
+export default router;

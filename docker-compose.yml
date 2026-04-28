@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build: ./server
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      PORT: 5001
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongo:27017/reliable-drives
+      JWT_SECRET: replace-with-a-long-random-secret
+      CLIENT_URL: http://localhost:5173
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
