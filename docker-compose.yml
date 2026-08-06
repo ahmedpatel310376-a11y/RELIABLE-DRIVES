@@ -16,8 +16,8 @@ services:
       PORT: 5001
       NODE_ENV: production
       MONGO_URI: mongodb://mongo:27017/reliable-drives
-      JWT_SECRET: replace-with-a-long-random-secret
-      CLIENT_URL: http://localhost:5173
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET to a strong random value}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5173}
     depends_on:
       - mongo
 

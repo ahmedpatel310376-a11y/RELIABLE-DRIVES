@@ -1,10 +1,14 @@
 import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import multer from "multer";
+
+dotenv.config();
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 const now = new Date().toISOString();
+const previewToken = "preview-token";
 
 let cars = [
   {
@@ -99,10 +103,32 @@ app.get("/api/health", (req, res) => {
 });
 
 app.post("/api/auth/login", (req, res) => {
+  if (!req.body?.username || !req.body?.password) {
+    return res.status(400).json({ message: "Username and password are required" });
+  }
+
+  if (
+    req.body.username !== process.env.ADMIN_USERNAME
+    || req.body.password !== process.env.ADMIN_PASSWORD
+  ) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
   res.json({
-    token: "preview-token",
-    admin: { id: "preview-admin", username: req.body?.username || "admin" }
+    token: previewToken,
+    admin: { id: "preview-admin", username: process.env.ADMIN_USERNAME }
   });
+});
+
+const protectPreview = (req, res, next) => {
+  if (req.headers.authorization !== `Bearer ${previewToken}`) {
+    return res.status(401).json({ message: "Authentication token required" });
+  }
+  next();
+};
+
+app.get("/api/auth/me", protectPreview, (req, res) => {
+  res.json({ id: "preview-admin", username: process.env.ADMIN_USERNAME });
 });
 
 app.get("/api/cars", (req, res) => {
@@ -153,7 +179,7 @@ app.get("/api/cars/:id", (req, res) => {
   res.json(car);
 });
 
-app.post("/api/cars", upload.array("images"), (req, res) => {
+app.post("/api/cars", protectPreview, upload.array("images"), (req, res) => {
   const car = {
     _id: String(Date.now()),
     ...req.body,
@@ -171,7 +197,7 @@ app.post("/api/cars", upload.array("images"), (req, res) => {
   res.status(201).json(car);
 });
 
-app.put("/api/cars/:id", upload.array("images"), (req, res) => {
+app.put("/api/cars/:id", protectPreview, upload.array("images"), (req, res) => {
   const index = cars.findIndex((item) => item._id === req.params.id);
   if (index === -1) return res.status(404).json({ message: "Car not found" });
 
@@ -185,7 +211,7 @@ app.put("/api/cars/:id", upload.array("images"), (req, res) => {
   res.json(cars[index]);
 });
 
-app.delete("/api/cars/:id", (req, res) => {
+app.delete("/api/cars/:id", protectPreview, (req, res) => {
   cars = cars.filter((item) => item._id !== req.params.id);
   res.json({ message: "Car deleted successfully" });
 });

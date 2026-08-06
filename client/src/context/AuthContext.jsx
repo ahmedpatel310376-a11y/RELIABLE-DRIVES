@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import http from "../api/http";
 
 const AuthContext = createContext(null);
@@ -9,6 +9,27 @@ export const AuthProvider = ({ children }) => {
     const saved = localStorage.getItem("rd_admin");
     return saved ? JSON.parse(saved) : null;
   });
+  const [checkingAuth, setCheckingAuth] = useState(Boolean(token));
+
+  useEffect(() => {
+    if (!token) {
+      setCheckingAuth(false);
+      return;
+    }
+
+    http.get("/auth/me")
+      .then(({ data }) => {
+        localStorage.setItem("rd_admin", JSON.stringify(data));
+        setAdmin(data);
+      })
+      .catch(() => {
+        localStorage.removeItem("rd_token");
+        localStorage.removeItem("rd_admin");
+        setToken(null);
+        setAdmin(null);
+      })
+      .finally(() => setCheckingAuth(false));
+  }, [token]);
 
   const login = async (credentials) => {
     const { data } = await http.post("/auth/login", credentials);
@@ -16,6 +37,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("rd_admin", JSON.stringify(data.admin));
     setToken(data.token);
     setAdmin(data.admin);
+    setCheckingAuth(false);
     return data;
   };
 
@@ -27,8 +49,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = useMemo(
-    () => ({ admin, isAuthenticated: Boolean(token), login, logout }),
-    [admin, token]
+    () => ({ admin, checkingAuth, isAuthenticated: Boolean(token), login, logout }),
+    [admin, checkingAuth, token]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

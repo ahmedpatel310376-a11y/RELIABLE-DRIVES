@@ -37,11 +37,11 @@ docker compose up mongo
 npm run seed:admin
 ```
 
-Default seed values come from `server/.env`:
+Set a private owner username and a strong password in `server/.env` before seeding:
 
 ```text
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=Admin@12345
+ADMIN_USERNAME=your-private-owner-username
+ADMIN_PASSWORD=your-strong-unique-password
 ```
 
 5. Start the backend and frontend in separate terminals:
@@ -52,6 +52,8 @@ npm run dev:client
 ```
 
 Open `http://localhost:5173`.
+
+The owner dashboard is intentionally omitted from public navigation. Its path comes from `VITE_ADMIN_PATH` and still requires valid JWT authentication. A custom path is not a replacement for a strong password.
 
 ## API
 
@@ -91,13 +93,17 @@ Backend:
 
 - Deploy `server/` to Render or Railway.
 - Set `MONGO_URI` to MongoDB Atlas.
-- Set a strong `JWT_SECRET`.
+- Set a random `JWT_SECRET` containing at least 32 characters.
 - Set `CLIENT_URL` to your frontend domain.
+- Set a unique `ADMIN_USERNAME` and strong `ADMIN_PASSWORD`.
 - Run `npm run seed:admin` once from the provider shell or locally against Atlas.
 
 ## Production Notes
 
 - Replace the placeholder logo text in `client/src/components/Layout.jsx` with an uploaded logo image when ready.
-- Change the seller phone number in `Home.jsx` and `CarDetails.jsx`.
+- The seller number is configured with `VITE_SELLER_PHONE`.
+- The private dashboard route is configured with `VITE_ADMIN_PATH`.
 - Keep `JWT_SECRET` private and long.
 - Use Cloudinary in production so uploaded images persist across deploys.
+- Use the regular `npm start` API in production. `npm run preview:api` is an in-memory local demonstration API and must not be deployed.
+- Configure HTTPS, a custom domain, database backups, uptime monitoring, analytics, and error reporting before launch.

@@ -12,9 +12,13 @@ export default [
       ecmaVersion: 2020,
       globals: {
         confirm: "readonly",
+        clearInterval: "readonly",
         FormData: "readonly",
         localStorage: "readonly",
         document: "readonly",
+        navigator: "readonly",
+        setInterval: "readonly",
+        setTimeout: "readonly",
         URLSearchParams: "readonly",
         window: "readonly"
       },

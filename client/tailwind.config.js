@@ -4,15 +4,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#15191e",
-        mist: "#f5f7f8",
-        line: "#dbe1e5",
-        teal: "#0f766e",
-        coral: "#ee6f57",
-        gold: "#d6a84f"
+        navy: "#06182f",
+        electric: "#1677ff",
+        ink: "#081a30",
+        mist: "#f4f7fc",
+        line: "#d9e4f1",
+        teal: "#1677ff",
+        coral: "#0066ff",
+        gold: "#69a8ff"
       },
       boxShadow: {
-        soft: "0 18px 50px rgba(21, 25, 30, 0.12)"
+        soft: "0 22px 70px rgba(6, 24, 47, 0.12)",
+        glow: "0 18px 60px rgba(22, 119, 255, 0.28)"
       }
     }
   },

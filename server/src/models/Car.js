@@ -23,7 +23,21 @@ const carSchema = new mongoose.Schema(
     transmission: {
       type: String,
       required: true,
-      enum: ["Manual", "Automatic"]
+      enum: ["Manual", "Automatic", "CVT", "AMT", "DCT"]
+    },
+    bodyType: {
+      type: String,
+      trim: true,
+      enum: ["Sedan", "SUV", "Hatchback", "MPV", "Coupe", "Convertible", "Wagon"],
+      default: null,
+      index: true
+    },
+    seatCapacity: { type: Number, min: 1, max: 10, default: null },
+    ownership: {
+      type: String,
+      enum: ["1st owner", "2nd owner", "3rd owner", "4th owner+"],
+      default: null,
+      index: true
     },
     kmDriven: { type: Number, required: true, min: 0 },
     location: { type: String, required: true, trim: true, index: true },
@@ -31,10 +45,11 @@ const carSchema = new mongoose.Schema(
     images: { type: [imageSchema], default: [] },
     status: {
       type: String,
-      enum: ["available", "sold"],
+      enum: ["available", "reserved", "sold"],
       default: "available",
       index: true
-    }
+    },
+    featured: { type: Boolean, default: false, index: true }
   },
   { timestamps: true }
 );
