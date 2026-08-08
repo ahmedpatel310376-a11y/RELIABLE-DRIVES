@@ -20,12 +20,14 @@ const mapCarPayload = (body) => ({
   location: body.location,
   description: body.description,
   status: body.status,
-  featured: parseBoolean(body.featured)
+  featured: parseBoolean(body.featured),
 });
 
+// 🔥 IMAGE UPLOAD LOGIC (UPDATED)
 const uploadImages = async (files, req) => {
   if (!files?.length) return [];
 
+  // ✅ Cloudinary upload
   if (isCloudinaryConfigured) {
     const uploads = await Promise.all(
       files.map((file) =>
@@ -36,16 +38,33 @@ const uploadImages = async (files, req) => {
         })
       )
     );
-    await Promise.all(files.map((file) => fs.unlink(file.path).catch(() => null)));
-    return uploads.map((img) => ({ url: img.secure_url, publicId: img.public_id }));
+
+    // ✅ delete local temp files after upload
+    await Promise.all(
+      files.map((file) =>
+        fs.unlink(file.path).catch(() => null)
+      )
+    );
+
+    return uploads.map((img) => ({
+      url: img.secure_url,
+      publicId: img.public_id,
+    }));
   }
 
+  // ⚠️ fallback (local storage)
   const baseUrl = `${req.protocol}://${req.get("host")}`;
-  return files.map((file) => ({ url: `${baseUrl}/uploads/${file.filename}`, publicId: null }));
+  return files.map((file) => ({
+    url: `${baseUrl}/uploads/${file.filename}`,
+    publicId: null,
+  }));
 };
 
+// 🧹 cleanup if error occurs
 const cleanupFiles = async (files) => {
-  if (files?.length) await Promise.all(files.map((f) => fs.unlink(f.path).catch(() => null)));
+  if (files?.length) {
+    await Promise.all(files.map((f) => fs.unlink(f.path).catch(() => null)));
+  }
 };
 
 // GET /api/cars
@@ -70,18 +89,19 @@ export const getCars = async (req, res, next) => {
     if (status) filter.status = status;
     if (featured !== undefined) filter.featured = featured === "true" || featured === true;
     if (year) filter.year = Number(year);
+
     if (minYear || maxYear) {
       filter.year = {};
       if (minYear) filter.year.$gte = Number(minYear);
       if (maxYear) filter.year.$lte = Number(maxYear);
     }
+
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    // Whitelist sort fields to prevent injection
     const allowedSorts = ["-createdAt", "createdAt", "price", "-price", "kmDriven", "-kmDriven", "year", "-year"];
     const safeSort = allowedSorts.includes(sort) ? sort : "-createdAt";
 
@@ -129,6 +149,7 @@ export const createCar = async (req, res, next) => {
 
     const images = await uploadImages(req.files, req);
     const car = await Car.create({ ...mapCarPayload(req.body), images });
+
     res.status(201).json(car);
   } catch (err) {
     await cleanupFiles(req.files);
@@ -152,8 +173,11 @@ export const updateCar = async (req, res, next) => {
     }
 
     Object.assign(car, mapCarPayload(req.body));
+
     const newImages = await uploadImages(req.files, req);
-    if (newImages.length) car.images.push(...newImages);
+    if (newImages.length) {
+      car.images.push(...newImages);
+    }
 
     await car.save();
     res.json(car);
@@ -169,15 +193,19 @@ export const deleteCar = async (req, res, next) => {
     const car = await Car.findById(req.params.id);
     if (!car) return res.status(404).json({ message: "Car not found" });
 
+    // ✅ delete from Cloudinary
     if (isCloudinaryConfigured) {
       await Promise.all(
         car.images
           .filter((img) => img.publicId)
-          .map((img) => cloudinary.uploader.destroy(img.publicId).catch(() => null))
+          .map((img) =>
+            cloudinary.uploader.destroy(img.publicId).catch(() => null)
+          )
       );
     }
 
     await car.deleteOne();
+
     res.json({ message: "Car deleted successfully" });
   } catch (err) {
     next(err);

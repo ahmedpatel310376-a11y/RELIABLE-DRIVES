@@ -1,6 +1,6 @@
+import "dotenv/config";
 import path from "path";
 import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -9,8 +9,6 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
-
-dotenv.config();
 
 const requiredEnvironment = ["MONGO_URI", "JWT_SECRET", "CLIENT_URL"];
 const missingEnvironment = requiredEnvironment.filter((name) => !process.env[name]);

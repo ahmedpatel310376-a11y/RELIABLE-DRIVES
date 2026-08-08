@@ -88,6 +88,7 @@ Frontend:
 - Set `VITE_API_URL=https://your-api-domain.com/api`.
 - Build command: `npm run build`.
 - Publish directory: `dist`.
+- SPA fallback files are included for Vercel, Netlify, and nginx Docker so direct routes work after refresh.
 
 Backend:
 
@@ -100,7 +101,7 @@ Backend:
 
 ## Production Notes
 
-- Replace the placeholder logo text in `client/src/components/Layout.jsx` with an uploaded logo image when ready.
+- See `DEPLOYMENT_CHECKLIST.md` before launch.
 - The seller number is configured with `VITE_SELLER_PHONE`.
 - The private dashboard route is configured with `VITE_ADMIN_PATH`.
 - Keep `JWT_SECRET` private and long.
