@@ -1,79 +1,119 @@
 import { motion } from "framer-motion";
-import { Gauge, Heart, MapPin, Calendar, Fuel } from "lucide-react";
+import { Heart, MapPin, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useWishlist } from "../context/WishlistContext";
-import { fallbackImage, formatKm, formatPrice } from "../utils/format";
+import { fallbackImage } from "../utils/format";
 
 export default function CarCard({ car }) {
   const wishlist = useWishlist();
   const image = car.images?.[0]?.url || fallbackImage;
+  const badgeColor =
+    car.status === "sold" ? "bg-red-500" : car.status === "reserved" ? "bg-amber-500" : "bg-emerald-500";
+  const badgeLabel =
+    car.status === "sold" ? "Sold" : car.status === "reserved" ? "Reserved" : "Available";
 
   return (
     <motion.article
-      whileHover={{ y: -6 }}
-      whileTap={{ scale: 0.995 }}
-      transition={{ type: "spring", stiffness: 300 }}
-      className="group overflow-hidden rounded-2xl border border-line bg-white shadow-sm transition-shadow hover:shadow-soft"
+      whileHover={{ y: -8, boxShadow: "0 20px 50px rgba(0, 0, 0, 0.12)" }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all hover:border-blue-200"
     >
+      {/* Image Section */}
       <Link to={`/cars/${car._id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-line">
+        <div className="relative h-56 overflow-hidden bg-gray-100 sm:h-64">
           <motion.img
             src={image}
             alt={car.title}
             className="h-full w-full object-cover"
-            whileHover={{ scale: 1.07 }}
-            transition={{ duration: 0.45 }}
+            whileHover={{ scale: 1.08 }}
+            transition={{ duration: 0.5 }}
           />
-          {(car.status === "sold" || car.status === "reserved" || car.featured) && (
-            <div className="absolute left-3 top-3 flex flex-col gap-2">
+
+          {/* Badge */}
+          {(car.featured || car.status !== "available") && (
+            <div className="absolute left-4 top-4 flex flex-col gap-2">
               {car.featured && (
-                <span className="rounded-md bg-electric px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-navy shadow-md">Featured</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
+                  <Zap size={12} /> Featured
+                </span>
               )}
-              {(car.status === "sold" || car.status === "reserved") && (
-                <span className={`rounded-md px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white ${car.status === "sold" ? "bg-coral" : "bg-blue-600"}`}>
-                  {car.status}
+              {car.status !== "available" && (
+                <span className={`rounded-full px-3 py-1 text-xs font-bold text-white shadow-lg ${badgeColor}`}>
+                  {badgeLabel}
                 </span>
               )}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/35 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+          {/* Gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
       </Link>
 
-      <div className="space-y-4 p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-lg font-black text-electric">{formatPrice(car.price)}</p>
-            <Link to={`/cars/${car._id}`} className="font-semibold hover:text-teal line-clamp-1">{car.title}</Link>
-          </div>
+      {/* Content Section */}
+      <div className="flex flex-col gap-3 p-5 sm:gap-4 sm:p-6">
+        {/* Price - Most prominent */}
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-2xl font-black text-blue-600 sm:text-3xl">
+            ₹{(car.price / 100000).toFixed(1)}L
+          </p>
           <motion.button
             whileTap={{ scale: 0.85 }}
-            whileHover={{ rotate: wishlist.has(car._id) ? 0 : -8, scale: 1.06 }}
-            className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-md border transition ${
-              wishlist.has(car._id) ? "border-coral bg-coral text-white" : "border-line bg-white text-ink hover:border-coral hover:text-coral"
+            whileHover={{ scale: 1.1 }}
+            className={`grid h-10 w-10 flex-shrink-0 place-items-center rounded-full border-2 transition ${
+              wishlist.has(car._id)
+                ? "border-red-500 bg-red-50 text-red-500"
+                : "border-gray-200 bg-white text-gray-400 hover:border-red-300 hover:text-red-400"
             }`}
             onClick={() => wishlist.toggle(car._id)}
             title="Toggle wishlist"
           >
-            <Heart size={17} fill={wishlist.has(car._id) ? "currentColor" : "none"} />
+            <Heart size={18} fill={wishlist.has(car._id) ? "currentColor" : "none"} />
           </motion.button>
         </div>
 
-        <div className="grid gap-2 text-xs text-ink/60 sm:grid-cols-2">
-          <span className="inline-flex items-center gap-2"><Calendar size={13} /> {car.year}</span>
-          <span className="inline-flex items-center gap-2"><Fuel size={13} /> {car.fuelType}</span>
-          <span className="inline-flex items-center gap-2 capitalize">{car.transmission}</span>
-          <span className="inline-flex items-center gap-2"><Gauge size={13} /> {formatKm(car.kmDriven)}</span>
+        {/* Car Title */}
+        <Link to={`/cars/${car._id}`} className="group/link">
+          <h3 className="line-clamp-2 text-lg font-bold text-gray-900 transition group-hover/link:text-blue-600 sm:text-xl">
+            {car.title}
+          </h3>
+        </Link>
+
+        {/* Key Details - Tags/Pills */}
+        <div className="flex flex-wrap gap-2">
+          {car.year && (
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+              {car.year}
+            </span>
+          )}
+          {car.fuelType && (
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+              {car.fuelType}
+            </span>
+          )}
+          {car.transmission && (
+            <span className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+              {car.transmission}
+            </span>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="inline-flex items-center gap-1 text-sm font-semibold text-ink/70">
-            <MapPin size={14} /> {car.location}
+        {/* Location */}
+        {car.location && (
+          <p className="inline-flex items-center gap-2 text-sm text-gray-600">
+            <MapPin size={16} className="text-blue-500" />
+            <span className="font-medium">{car.location}</span>
           </p>
-          <Link to={`/cars/${car._id}`} className="rounded-full border border-line bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-ink transition hover:border-teal hover:text-teal">
-            View details
-          </Link>
-        </div>
+        )}
+
+        {/* CTA Button */}
+        <Link
+          to={`/cars/${car._id}`}
+          className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 font-bold text-white shadow-lg shadow-blue-500/20 transition hover:shadow-lg hover:shadow-blue-500/40 active:scale-95"
+        >
+          View Details
+        </Link>
       </div>
     </motion.article>
   );

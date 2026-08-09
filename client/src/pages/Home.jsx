@@ -23,6 +23,7 @@ import BrandLogo from "../components/BrandLogo";
 import CarCard from "../components/CarCard";
 import SearchFilters from "../components/SearchFilters";
 import Skeleton from "../components/Skeleton";
+import WhatsAppButton from "../components/WhatsAppButton";
 import { SELLER_PHONE } from "../config/site";
 
 const FadeUp = ({ children, delay = 0, className = "" }) => {
@@ -74,7 +75,7 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.25]);
 
   useEffect(() => {
-    http.get("/cars", { params: { limit: 6, status: "available" } })
+    http.get("/cars", { params: { limit: 6 } })
       .then(({ data }) => setCars(data.cars))
       .catch(() => setCars([]))
       .finally(() => setLoading(false));
@@ -345,6 +346,9 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
     </>
   );
 }

@@ -19,7 +19,7 @@ const mapCarPayload = (body) => ({
   kmDriven: parseNumber(body.kmDriven),
   location: body.location,
   description: body.description,
-  status: body.status,
+  status: body.status || "available",
   featured: parseBoolean(body.featured),
 });
 
