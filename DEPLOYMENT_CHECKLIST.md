@@ -57,6 +57,7 @@
 - Open the homepage.
 - Open `/cars`.
 - Open `/secure-inventory/login`.
+- If you forget the private path, `/admin/login` redirects to the admin login and `/admin` redirects to the dashboard path.
 - Login as admin.
 - Create a test car with photos.
 - Confirm photos still load after refreshing the page.

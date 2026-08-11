@@ -127,6 +127,34 @@ export const getCars = async (req, res, next) => {
   }
 };
 
+// GET /api/cars/admin/summary
+export const getCarSummary = async (req, res, next) => {
+  try {
+    const [
+      total,
+      available,
+      reserved,
+      sold,
+      featured,
+      recent
+    ] = await Promise.all([
+      Car.countDocuments(),
+      Car.countDocuments({ status: "available" }),
+      Car.countDocuments({ status: "reserved" }),
+      Car.countDocuments({ status: "sold" }),
+      Car.countDocuments({ featured: true }),
+      Car.find().sort("-createdAt").limit(6).lean()
+    ]);
+
+    res.json({
+      counts: { total, available, reserved, sold, featured },
+      recent
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // GET /api/cars/:id
 export const getCarById = async (req, res, next) => {
   try {

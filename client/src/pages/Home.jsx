@@ -113,12 +113,14 @@ export default function Home() {
           className="container-pad grid min-h-[calc(100vh-4.5rem)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr]"
         >
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
-            <div className="mb-6 inline-flex overflow-hidden rounded-2xl border border-white/10 bg-navy/80 p-3 shadow-2xl backdrop-blur">
-              <BrandLogo variant="footer" />
+            <div className="mb-8 flex max-w-md flex-col items-start gap-5 sm:mb-10">
+              <div className="inline-flex overflow-hidden rounded-2xl border border-white/10 bg-navy/85 p-3 shadow-2xl backdrop-blur">
+                <BrandLogo variant="footer" />
+              </div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-blue-300/20 bg-blue-400/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-blue-200 backdrop-blur">
+                <Sparkles size={15} /> Premium pre-owned cars
+              </p>
             </div>
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-300/20 bg-blue-400/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-blue-200 backdrop-blur">
-              <Sparkles size={15} /> Premium pre-owned cars
-            </p>
             <h1 className="max-w-4xl text-5xl font-black leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
               Drive something
               <span className="block bg-gradient-to-r from-blue-300 via-electric to-blue-200 bg-clip-text text-transparent">

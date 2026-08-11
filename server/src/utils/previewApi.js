@@ -93,6 +93,22 @@ let cars = [
   }
 ];
 
+let enquiries = [
+  {
+    _id: "770000000000000000000001",
+    name: "Rahul Sharma",
+    phone: "9876543210",
+    budget: 900000,
+    preferredBrand: "Honda",
+    preferredCar: "Honda City",
+    fuelType: "Petrol",
+    transmission: "Automatic",
+    notes: "Looking for a well-maintained sedan with service history.",
+    status: "New",
+    createdAt: now
+  }
+];
+
 const toNumber = (value) => (value === undefined ? value : Number(value));
 
 app.use(cors({ origin: true }));
@@ -173,6 +189,19 @@ app.get("/api/cars", (req, res) => {
   });
 });
 
+app.get("/api/cars/admin/summary", protectPreview, (req, res) => {
+  res.json({
+    counts: {
+      total: cars.length,
+      available: cars.filter((car) => car.status === "available").length,
+      reserved: cars.filter((car) => car.status === "reserved").length,
+      sold: cars.filter((car) => car.status === "sold").length,
+      featured: cars.filter((car) => car.featured).length
+    },
+    recent: cars.slice(0, 6)
+  });
+});
+
 app.get("/api/cars/:id", (req, res) => {
   const car = cars.find((item) => item._id === req.params.id);
   if (!car) return res.status(404).json({ message: "Car not found" });
@@ -214,6 +243,42 @@ app.put("/api/cars/:id", protectPreview, upload.array("images"), (req, res) => {
 app.delete("/api/cars/:id", protectPreview, (req, res) => {
   cars = cars.filter((item) => item._id !== req.params.id);
   res.json({ message: "Car deleted successfully" });
+});
+
+app.post("/api/enquiries", (req, res) => {
+  const enquiry = {
+    _id: String(Date.now()),
+    name: req.body.name,
+    phone: req.body.phone,
+    budget: toNumber(req.body.budget),
+    preferredBrand: req.body.preferredBrand || "",
+    preferredCar: req.body.preferredCar || "",
+    fuelType: req.body.fuelType || "",
+    transmission: req.body.transmission || "",
+    notes: req.body.notes || "",
+    status: "New",
+    createdAt: new Date().toISOString()
+  };
+  enquiries.unshift(enquiry);
+  res.status(201).json({ message: "Enquiry submitted successfully", enquiry });
+});
+
+app.get("/api/enquiries", protectPreview, (req, res) => {
+  const result = req.query.status
+    ? enquiries.filter((enquiry) => enquiry.status === req.query.status)
+    : enquiries;
+
+  res.json({
+    enquiries: result,
+    pagination: { page: 1, pages: 1, total: result.length }
+  });
+});
+
+app.patch("/api/enquiries/:id/status", protectPreview, (req, res) => {
+  const enquiry = enquiries.find((item) => item._id === req.params.id);
+  if (!enquiry) return res.status(404).json({ message: "Enquiry not found" });
+  enquiry.status = req.body.status;
+  res.json(enquiry);
 });
 
 const PORT = process.env.PORT || 5001;

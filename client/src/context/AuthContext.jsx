@@ -3,12 +3,19 @@ import http from "../api/http";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem("rd_token"));
-  const [admin, setAdmin] = useState(() => {
+const getSavedAdmin = () => {
+  try {
     const saved = localStorage.getItem("rd_admin");
     return saved ? JSON.parse(saved) : null;
-  });
+  } catch {
+    localStorage.removeItem("rd_admin");
+    return null;
+  }
+};
+
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState(() => localStorage.getItem("rd_token"));
+  const [admin, setAdmin] = useState(getSavedAdmin);
   const [checkingAuth, setCheckingAuth] = useState(Boolean(token));
 
   useEffect(() => {

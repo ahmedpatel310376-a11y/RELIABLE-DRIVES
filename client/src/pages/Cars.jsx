@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { MessageSquareText, Search, SlidersHorizontal, X } from "lucide-react";
 import http from "../api/http";
 import CarCard from "../components/CarCard";
 import CarEnquiryForm from "../components/CarEnquiryForm";
@@ -75,7 +75,7 @@ export default function Cars() {
   return (
     <>
       {/* Hero Section */}
-      <section className="blue-grid bg-gradient-to-br from-blue-600 to-blue-800 py-16 text-white">
+      <section className="border-b border-line bg-white py-16">
         <motion.div
           className="container-pad flex flex-col gap-7 md:flex-row md:items-end md:justify-between"
           initial={{ opacity: 0, y: 18 }}
@@ -83,13 +83,13 @@ export default function Cars() {
           transition={{ duration: 0.4 }}
         >
           <div>
-            <p className="section-label text-blue-200">Reliable Drives inventory</p>
-            <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Find your next car.</h1>
-            <p className="mt-3 max-w-xl text-blue-100">Browse our complete collection or use advanced filters to find exactly what you need.</p>
+            <p className="section-label">Reliable Drives inventory</p>
+            <h1 className="mt-3 text-4xl font-black tracking-tight text-navy sm:text-5xl">Find your next car.</h1>
+            <p className="mt-3 max-w-xl text-ink/65">Browse our complete collection or use advanced filters to find exactly what you need.</p>
           </div>
           <motion.button
             whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-blue-600 shadow-lg transition hover:shadow-xl active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-electric px-6 py-3 font-bold text-white shadow-lg shadow-electric/20 transition hover:bg-blue-600 hover:shadow-xl active:scale-95"
             onClick={() => setFiltersOpen(!filtersOpen)}
           >
             <SlidersHorizontal size={18} />
@@ -333,6 +333,18 @@ export default function Cars() {
       {/* Enquiry Form Section */}
       <section className="bg-gray-50 py-16">
         <div className="container-pad">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-electric text-white shadow-lg shadow-electric/20">
+                <MessageSquareText size={25} />
+              </span>
+              <p className="section-label mt-5">Customer enquiry</p>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-navy">Tell us what you need.</h2>
+            </div>
+            <p className="max-w-xl text-sm font-semibold leading-6 text-ink/55">
+              Share your preferred car, budget and contact details. Your enquiry will be saved for the Reliable Drives team.
+            </p>
+          </div>
           <CarEnquiryForm />
         </div>
       </section>

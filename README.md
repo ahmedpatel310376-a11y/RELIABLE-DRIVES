@@ -60,10 +60,14 @@ The owner dashboard is intentionally omitted from public navigation. Its path co
 ```text
 POST   /api/auth/login
 GET    /api/cars
+GET    /api/cars/admin/summary protected
 GET    /api/cars/:id
 POST   /api/cars        protected, multipart images[]
 PUT    /api/cars/:id    protected, multipart images[]
 DELETE /api/cars/:id    protected
+POST   /api/enquiries
+GET    /api/enquiries   protected
+PATCH  /api/enquiries/:id/status protected
 ```
 
 `GET /api/cars` supports `brand`, `fuelType`, `location`, `minPrice`, `maxPrice`, `status`, `sort`, `page`, and `limit`.

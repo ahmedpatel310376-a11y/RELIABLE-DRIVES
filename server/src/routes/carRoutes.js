@@ -4,6 +4,7 @@ import {
   createCar,
   deleteCar,
   getCarById,
+  getCarSummary,
   getCars,
   updateCar
 } from "../controllers/carController.js";
@@ -32,6 +33,7 @@ const carRules = [
 ];
 
 router.route("/").get(getCars).post(protect, upload.array("images", 8), carRules, createCar);
+router.get("/admin/summary", protect, getCarSummary);
 router
   .route("/:id")
   .get(objectIdRule, getCarById)

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, BadgeCheck, Calendar, CheckCircle2, Globe2, Headphones, ShieldCheck, TrendingUp } from "lucide-react";
+import { ArrowRight, BadgeCheck, Calendar, CheckCircle2, Globe2, Headphones, Quote, ShieldCheck, TrendingUp, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const sectionMotion = {
@@ -93,6 +93,48 @@ export default function About() {
           </div>
         </motion.div>
       </div>
+
+      <section className="container-pad py-20">
+        <motion.div initial="hidden" animate="show" variants={sectionMotion} className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] shadow-2xl">
+          <div className="grid lg:grid-cols-[.8fr_1.2fr]">
+            <div className="relative bg-navy/60 p-8 sm:p-10">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(22,119,255,0.22),_transparent_42%)]" />
+              <div className="relative">
+                <div className="grid h-20 w-20 place-items-center rounded-3xl bg-electric text-white shadow-glow">
+                  <UserRound size={34} />
+                </div>
+                <p className="mt-8 text-xs font-black uppercase tracking-[0.22em] text-blue-300">Founder</p>
+                <h2 className="mt-3 text-4xl font-black tracking-tight">Ali Mohammed Patel</h2>
+                <p className="mt-2 text-lg font-bold text-white/80">Founder, Reliable Drives</p>
+                <div className="mt-6 rounded-2xl border border-blue-300/20 bg-blue-400/10 p-5">
+                  <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-200">25+ Years of Experience</p>
+                  <p className="mt-2 text-sm leading-7 text-white/70">In the automobile business</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-8 sm:p-10">
+              <p className="section-label text-blue-300">Founder profile</p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight">Experience-led guidance for confident car buying.</h2>
+              <p className="mt-5 text-base leading-8 text-white/72">
+                Ali Mohammed Patel brings more than 25 years of automobile business experience to Reliable Drives. His understanding of vehicle condition, market value, customer expectations, and long-term ownership helps shape a buying experience built on clarity and trust. Through Reliable Drives, he focuses on practical advice, dependable inventory, and customer relationships that continue beyond the first enquiry.
+              </p>
+              <div className="mt-8 grid gap-4">
+                {[
+                  "Buying a pre-owned car should feel clear, confident, and free from uncertainty.",
+                  "After more than 25 years in the automobile business, I believe trust is the most valuable part of every customer relationship.",
+                  "Every car we recommend should be one we would be comfortable recommending to our own family."
+                ].map((quote) => (
+                  <blockquote key={quote} className="rounded-2xl border border-white/10 bg-navy/20 p-5">
+                    <Quote size={20} className="text-blue-300" />
+                    <p className="mt-3 text-sm font-semibold leading-7 text-white/78">“{quote}”</p>
+                    <footer className="mt-3 text-xs font-black uppercase tracking-[0.18em] text-blue-300">Ali Mohammed Patel</footer>
+                  </blockquote>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
 
       <section className="container-pad py-20">
         <motion.div initial="hidden" animate="show" variants={sectionMotion} className="grid gap-10 lg:grid-cols-[2fr_1fr]">

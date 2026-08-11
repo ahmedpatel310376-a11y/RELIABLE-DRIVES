@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { Phone, User, DollarSign } from "lucide-react";
+import { Car, Phone, User, DollarSign } from "lucide-react";
+import http from "../api/http";
 
 const containerMotion = {
   hidden: { opacity: 0, y: 20 },
@@ -23,11 +24,13 @@ export default function CarEnquiryForm() {
     phone: "",
     budget: "",
     preferredBrand: "",
+    preferredCar: "",
     fuelType: "",
     transmission: "",
     notes: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submittedPhone, setSubmittedPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
   const brands = ["Maruti", "Hyundai", "Honda", "Toyota", "Tata", "Mahindra", "Volkswagen", "Kia", "Renault", "Skoda"];
@@ -48,9 +51,10 @@ export default function CarEnquiryForm() {
     }
 
     setLoading(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
+
+    try {
+      await http.post("/enquiries", formData);
+      setSubmittedPhone(formData.phone);
       setLoading(false);
       setSubmitted(true);
       setFormData({
@@ -58,6 +62,7 @@ export default function CarEnquiryForm() {
         phone: "",
         budget: "",
         preferredBrand: "",
+        preferredCar: "",
         fuelType: "",
         transmission: "",
         notes: ""
@@ -67,8 +72,12 @@ export default function CarEnquiryForm() {
 
       setTimeout(() => {
         setSubmitted(false);
+        setSubmittedPhone("");
       }, 5000);
-    }, 1000);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response?.data?.message || "Unable to submit enquiry");
+    }
   };
 
   if (submitted) {
@@ -94,7 +103,7 @@ export default function CarEnquiryForm() {
           We will find your perfect car within 1 week
         </p>
         <p className="mt-2 text-sm text-gray-600">
-          Our team will contact you shortly at {formData.phone}
+          Our team will contact you shortly at {submittedPhone}
         </p>
       </motion.div>
     );
@@ -172,6 +181,23 @@ export default function CarEnquiryForm() {
               placeholder="500000"
               className="w-full rounded-xl border border-gray-300 bg-white pl-12 pr-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
               required
+            />
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemMotion}>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Preferred Car / Model
+          </label>
+          <div className="relative">
+            <Car className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              name="preferredCar"
+              value={formData.preferredCar}
+              onChange={handleChange}
+              placeholder="e.g. Honda City, Creta, Swift"
+              className="w-full rounded-xl border border-gray-300 bg-white pl-12 pr-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>
         </motion.div>

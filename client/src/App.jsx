@@ -32,6 +32,8 @@ export default function App() {
           <Route path="/about" element={<Page><About /></Page>} />
           <Route path="/cars" element={<Page><Cars /></Page>} />
           <Route path="/cars/:id" element={<Page><CarDetails /></Page>} />
+          <Route path="/admin/login" element={<Navigate to={`${ADMIN_PATH}/login`} replace />} />
+          <Route path="/admin" element={<Navigate to={ADMIN_PATH} replace />} />
           <Route path={`${ADMIN_PATH}/login`} element={<Page><Login /></Page>} />
           <Route
             path={ADMIN_PATH}

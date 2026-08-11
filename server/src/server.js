@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
+import enquiryRoutes from "./routes/enquiryRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const requiredEnvironment = ["MONGO_URI", "JWT_SECRET", "CLIENT_URL"];
@@ -65,6 +66,7 @@ app.get("/api/health", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/cars", carRoutes);
+app.use("/api/enquiries", enquiryRoutes);
 
 // Error handling
 app.use(notFound);
