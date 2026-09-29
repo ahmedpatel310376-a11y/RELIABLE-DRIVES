@@ -13,6 +13,14 @@ import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const requiredEnvironment = ["MONGO_URI", "JWT_SECRET", "CLIENT_URL"];
 const missingEnvironment = requiredEnvironment.filter((name) => !process.env[name]);
+const productionOrigins = [
+  "https://reliabledrives.co.in",
+  "https://www.reliabledrives.co.in",
+];
+const configuredOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",").map((origin) => origin.trim()).filter(Boolean)
+  : [];
+const allowedOrigins = [...new Set([...configuredOrigins, ...productionOrigins])];
 
 if (missingEnvironment.length) {
   console.error(`Missing required environment variables: ${missingEnvironment.join(", ")}`);
@@ -38,7 +46,14 @@ connectDB();
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(
   cors({
-    origin: process.env.CLIENT_URL.split(",").map((origin) => origin.trim()),
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Origin not allowed by CORS"));
+    },
     credentials: true,
   })
 );
