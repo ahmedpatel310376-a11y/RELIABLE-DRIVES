@@ -573,7 +573,7 @@ export default function AdminDashboard() {
                             <td className="px-4 py-3">
                               <button
                                 type="button"
-                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${car.featured ? "bg-blue-50 text-electric ring-blue-100" : "bg-white text-ink/55 ring-line"`}
+                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${car.featured ? "bg-blue-50 text-electric ring-blue-100" : "bg-white text-ink/55 ring-line"}`}
                                 onClick={() => toggleFeatured(car)}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
