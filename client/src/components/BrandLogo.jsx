@@ -8,8 +8,8 @@ const logoSizes = {
 export default function BrandLogo({ className = "", variant = "nav" }) {
   return (
     <img
-      src="/reliable-rides-logo.jpg"
-      alt="Reliable brand logo"
+      src="/reliable-drives-logo.png"
+      alt="Reliable Drives — Drive with confidence"
       className={`${logoSizes[variant] || logoSizes.nav} object-contain ${className}`}
     />
   );

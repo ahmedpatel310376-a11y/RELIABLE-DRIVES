@@ -290,7 +290,8 @@ export default function AdminDashboard() {
             <motion.article
               key={label}
               className="rounded-2xl border border-line bg-white p-5 shadow-sm transition"
-              whileHover={{ y: -4, boxShadow: "0 24px 70px rgba(6, 24, 47, 0.12)" }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.06 + index * 0.04 }}
@@ -322,7 +323,9 @@ export default function AdminDashboard() {
                   key={action.label}
                   type="button"
                   onClick={() => openAction(action)}
-                  className="group rounded-xl border border-line bg-mist/60 p-4 text-left transition hover:-translate-y-0.5 hover:border-electric hover:bg-white hover:shadow-sm"
+                  whileHover={{ y: -2, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group flex items-center gap-3 rounded-xl border border-line bg-mist/60 p-4 text-left transition hover:-translate-y-0.5 hover:border-electric hover:bg-white hover:shadow-sm"
                 >
                   <span className="grid h-10 w-10 place-items-center rounded-xl bg-navy text-blue-300 transition group-hover:bg-electric group-hover:text-white">
                     <action.icon size={19} />
@@ -365,6 +368,8 @@ export default function AdminDashboard() {
               key={id}
               type="button"
               onClick={() => setActiveTab(id)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               className={`inline-flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition sm:flex-none sm:px-6 ${
                 activeTab === id
                   ? "bg-electric text-white shadow-lg shadow-electric/20"
@@ -399,7 +404,12 @@ export default function AdminDashboard() {
                 </div>
                 <div className="divide-y divide-line">
                   {recentInventory.length ? recentInventory.map((car) => (
-                    <div key={car._id} className="flex items-center gap-4 p-4 transition hover:bg-mist/70">
+                    <motion.div
+                      key={car._id}
+                      className="flex items-center gap-4 p-4 transition hover:bg-mist/70"
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       <img src={car.images?.[0]?.url || fallbackImage} alt="" className="h-16 w-24 rounded-xl object-cover" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-black text-ink">{car.title}</p>
@@ -408,7 +418,7 @@ export default function AdminDashboard() {
                       <span className={`rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${statusStyles[car.status] || statusStyles.available}`}>
                         {car.status}
                       </span>
-                    </div>
+                    </motion.div>
                   )) : (
                     <div className="p-8 text-center text-sm font-semibold text-ink/45">No inventory added yet.</div>
                   )}
@@ -429,7 +439,12 @@ export default function AdminDashboard() {
                   {enquiriesLoading ? (
                     <div className="p-8 text-center text-sm font-semibold text-ink/45">Loading enquiries...</div>
                   ) : enquiries.slice(0, 5).length ? enquiries.slice(0, 5).map((enquiry) => (
-                    <div key={enquiry._id} className="p-4 transition hover:bg-mist/70">
+                    <div
+                      key={enquiry._id}
+                      className="p-4 transition hover:bg-mist/70"
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <p className="font-black text-ink">{enquiry.name}</p>
@@ -525,12 +540,14 @@ export default function AdminDashboard() {
                         ) : cars.length === 0 ? (
                           <tr><td className="px-4 py-8 text-center text-ink/50" colSpan="6">No cars found.</td></tr>
                         ) : cars.map((car, index) => (
-                          <motion.tr
+                          <tr
                             key={car._id}
                             className={`border-t border-line transition hover:bg-mist/70 ${selectedCar?._id === car._id ? "bg-blue-50" : ""}`}
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.24, delay: Math.min(index * 0.02, 0.16) }}
+                            whileHover={{ y: -2 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-3">
@@ -543,27 +560,53 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-4 py-3 font-black text-ink">{formatPrice(car.price)}</td>
                             <td className="px-4 py-3">
-                              <button type="button" className={`rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${statusStyles[car.status] || statusStyles.available}`} onClick={() => toggleStatus(car)}>
+                              <button
+                                type="button"
+                                className={`rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${statusStyles[car.status] || statusStyles.available}`}
+                                onClick={() => toggleStatus(car)}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
                                 {car.status}
                               </button>
                             </td>
                             <td className="px-4 py-3">
-                              <button type="button" className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${car.featured ? "bg-blue-50 text-electric ring-blue-100" : "bg-white text-ink/55 ring-line"}`} onClick={() => toggleFeatured(car)}>
+                              <button
+                                type="button"
+                                className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-black uppercase ring-1 ${car.featured ? "bg-blue-50 text-electric ring-blue-100" : "bg-white text-ink/55 ring-line"`}
+                                onClick={() => toggleFeatured(car)}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                              >
                                 <Star size={13} /> {car.featured ? "Featured" : "Mark"}
                               </button>
                             </td>
                             <td className="px-4 py-3 font-semibold text-ink/65">{car.location}</td>
                             <td className="px-4 py-3">
                               <div className="flex gap-2">
-                                <button type="button" className="rounded-lg border border-line p-2 text-ink/65 transition hover:border-electric hover:text-electric" onClick={() => setSelectedCar(car)} title="Edit car">
+                                <button
+                                  type="button"
+                                  className="rounded-lg border border-line p-2 text-ink/65 transition hover:border-electric hover:text-electric"
+                                  onClick={() => setSelectedCar(car)}
+                                  title="Edit car"
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                >
                                   <Edit size={16} />
                                 </button>
-                                <button type="button" className="rounded-lg border border-line p-2 text-ink/65 transition hover:border-electric hover:text-electric" onClick={() => deleteCar(car._id)} title="Delete car">
+                                <button
+                                  type="button"
+                                  className="rounded-lg border border-line p-2 text-ink/65 transition hover:border-electric hover:text-electric"
+                                  onClick={() => deleteCar(car._id)}
+                                  title="Delete car"
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                >
                                   <Trash2 size={16} />
                                 </button>
                               </div>
                             </td>
-                          </motion.tr>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
@@ -599,6 +642,7 @@ export default function AdminDashboard() {
                     <tr>
                       <th className="px-4 py-3">Customer</th>
                       <th className="px-4 py-3">Budget</th>
+                      <th className="px-4 py-3">Year</th>
                       <th className="px-4 py-3">Preference</th>
                       <th className="px-4 py-3">Fuel</th>
                       <th className="px-4 py-3">Transmission</th>
@@ -609,16 +653,22 @@ export default function AdminDashboard() {
                   </thead>
                   <tbody>
                     {enquiriesLoading ? (
-                      <tr><td className="px-4 py-8 text-center text-ink/50" colSpan="8">Loading enquiries...</td></tr>
+                      <tr><td className="px-4 py-8 text-center text-ink/50" colSpan="9">Loading enquiries...</td></tr>
                     ) : enquiries.length === 0 ? (
-                      <tr><td className="px-4 py-8 text-center text-ink/50" colSpan="8">No enquiries found.</td></tr>
+                      <tr><td className="px-4 py-8 text-center text-ink/50" colSpan="9">No enquiries found.</td></tr>
                     ) : enquiries.map((enquiry) => (
-                      <tr key={enquiry._id} className="border-t border-line transition hover:bg-mist/70">
+                      <tr
+                        key={enquiry._id}
+                        className="border-t border-line transition hover:bg-mist/70"
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
                         <td className="px-4 py-4">
                           <p className="font-black text-ink">{enquiry.name}</p>
                           <p className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-ink/50"><Phone size={13} /> {enquiry.phone}</p>
                         </td>
                         <td className="px-4 py-4 font-black text-ink">{formatPrice(enquiry.budget)}</td>
+                        <td className="px-4 py-4 font-semibold text-ink">{enquiry.preferredYear || "—"}</td>
                         <td className="px-4 py-4">
                           <p className="font-semibold text-ink">{enquiry.preferredCar || "Any model"}</p>
                           <p className="mt-1 text-xs font-semibold text-ink/50">{enquiry.preferredBrand || "Any brand"}</p>
@@ -632,6 +682,8 @@ export default function AdminDashboard() {
                             className={`rounded-xl border border-line px-3 py-2 text-xs font-black outline-none ${statusStyles[enquiry.status] || statusStyles.New}`}
                             value={enquiry.status}
                             onChange={(event) => updateEnquiryStatus(enquiry, event.target.value)}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             {enquiryStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
                           </select>
@@ -648,7 +700,12 @@ export default function AdminDashboard() {
                 ) : enquiries.length === 0 ? (
                   <div className="py-8 text-center text-sm font-semibold text-ink/50">No enquiries found.</div>
                 ) : enquiries.map((enquiry) => (
-                  <article key={enquiry._id} className="rounded-2xl border border-line bg-mist/40 p-4">
+                  <article
+                    key={enquiry._id}
+                    className="rounded-2xl border border-line bg-mist/40 p-4"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <p className="flex items-center gap-2 font-black text-ink"><UserRound size={16} className="text-electric" /> {enquiry.name}</p>
@@ -658,6 +715,8 @@ export default function AdminDashboard() {
                         className={`rounded-xl border border-line px-3 py-2 text-xs font-black outline-none ${statusStyles[enquiry.status] || statusStyles.New}`}
                         value={enquiry.status}
                         onChange={(event) => updateEnquiryStatus(enquiry, event.target.value)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         {enquiryStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
                       </select>

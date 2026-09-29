@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 const enquirySchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    phone: { type: String, required: true, trim: true },
+    phone: { type: String, required: true, trim: true, match: /^[0-9]{10}$/ },
     budget: { type: Number, required: true, min: 0 },
+    preferredYear: { type: Number, default: null },
     preferredBrand: { type: String, trim: true, default: "" },
     preferredCar: { type: String, trim: true, default: "" },
     fuelType: {

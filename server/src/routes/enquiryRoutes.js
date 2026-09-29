@@ -11,8 +11,9 @@ const router = express.Router();
 
 const enquiryRules = [
   body("name").trim().notEmpty().withMessage("Name is required"),
-  body("phone").trim().isLength({ min: 7 }).withMessage("Enter a valid phone number"),
+  body("phone").trim().isLength({ min: 10, max: 10 }).isNumeric().withMessage("Phone number must be exactly 10 digits"),
   body("budget").isNumeric().withMessage("Budget must be numeric"),
+  body("preferredYear").optional().isNumeric().withMessage("Year must be numeric"),
   body("preferredBrand").optional().trim(),
   body("preferredCar").optional().trim(),
   body("fuelType").optional().isIn(["", "Petrol", "Diesel", "CNG", "Electric", "Hybrid"]).withMessage("Invalid fuel type"),

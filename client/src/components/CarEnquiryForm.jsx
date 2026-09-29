@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { Car, Phone, User, DollarSign } from "lucide-react";
+import { Car, Phone, User, IndianRupee, Calendar, Loader2 } from "lucide-react";
 import http from "../api/http";
 
 const containerMotion = {
@@ -23,6 +23,7 @@ export default function CarEnquiryForm() {
     name: "",
     phone: "",
     budget: "",
+    preferredYear: "",
     preferredBrand: "",
     preferredCar: "",
     fuelType: "",
@@ -44,9 +45,14 @@ export default function CarEnquiryForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.phone || !formData.budget) {
       toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (formData.phone.length !== 10 || !/^[0-9]{10}$/.test(formData.phone)) {
+      toast.error("Phone number must be exactly 10 digits");
       return;
     }
 
@@ -61,6 +67,7 @@ export default function CarEnquiryForm() {
         name: "",
         phone: "",
         budget: "",
+        preferredYear: "",
         preferredBrand: "",
         preferredCar: "",
         fuelType: "",
@@ -91,7 +98,7 @@ export default function CarEnquiryForm() {
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
           className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500 text-white"
         >
           <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +136,7 @@ export default function CarEnquiryForm() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
-        <motion.div variants={itemMotion}>
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Full Name *
           </label>
@@ -148,9 +155,9 @@ export default function CarEnquiryForm() {
         </motion.div>
 
         {/* Phone */}
-        <motion.div variants={itemMotion}>
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Phone Number *
+            Phone Number (10 digits) *
           </label>
           <div className="relative">
             <Phone className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -160,6 +167,7 @@ export default function CarEnquiryForm() {
               value={formData.phone}
               onChange={handleChange}
               placeholder="9876543210"
+              maxLength="10"
               className="w-full rounded-xl border border-gray-300 bg-white pl-12 pr-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
               required
             />
@@ -167,12 +175,12 @@ export default function CarEnquiryForm() {
         </motion.div>
 
         {/* Budget */}
-        <motion.div variants={itemMotion}>
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Budget (₹) *
           </label>
           <div className="relative">
-            <DollarSign className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            <IndianRupee className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
             <input
               type="number"
               name="budget"
@@ -185,7 +193,27 @@ export default function CarEnquiryForm() {
           </div>
         </motion.div>
 
-        <motion.div variants={itemMotion}>
+        {/* Preferred Year */}
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Preferred Year of Car
+          </label>
+          <div className="relative">
+            <Calendar className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+            <input
+              type="number"
+              name="preferredYear"
+              value={formData.preferredYear}
+              onChange={handleChange}
+              placeholder="2020"
+              min="2000"
+              max={new Date().getFullYear()}
+              className="w-full rounded-xl border border-gray-300 bg-white pl-12 pr-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Preferred Car / Model
           </label>
@@ -203,7 +231,7 @@ export default function CarEnquiryForm() {
         </motion.div>
 
         {/* Grid: Brand, Fuel, Transmission */}
-        <motion.div variants={itemMotion} className="grid gap-4 sm:grid-cols-3">
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="grid gap-4 sm:grid-cols-3">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Preferred Brand
@@ -263,7 +291,7 @@ export default function CarEnquiryForm() {
         </motion.div>
 
         {/* Notes */}
-        <motion.div variants={itemMotion}>
+        <motion.div variants={itemMotion} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Additional Notes
           </label>
@@ -286,7 +314,14 @@ export default function CarEnquiryForm() {
           disabled={loading}
           className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-bold text-white shadow-lg shadow-blue-500/20 transition hover:shadow-lg hover:shadow-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
         >
-          {loading ? "Submitting..." : "Submit Enquiry"}
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Submitting...
+            </div>
+          ) : (
+            "Submit Enquiry"
+          )}
         </motion.button>
       </form>
 

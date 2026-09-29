@@ -7,6 +7,7 @@ const mapEnquiryPayload = (body) => ({
   name: body.name,
   phone: body.phone,
   budget: parseBudget(body.budget),
+  preferredYear: body.preferredYear ? Number(body.preferredYear) : null,
   preferredBrand: body.preferredBrand || "",
   preferredCar: body.preferredCar || "",
   fuelType: body.fuelType || "",
